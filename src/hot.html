@@ -1,0 +1,12 @@
+<!-- code injected by ss-->
+<script>
+  async function watchForChange(prevVersion) {
+    let currentVersion = await (await fetch('hot')).text();
+    if (prevVersion != null && prevVersion != currentVersion) {
+      window.location.reload();
+    } else {
+      setTimeout(() => watchForChange(currentVersion), 1000);
+    }
+  }
+  watchForChange(null);
+</script>
