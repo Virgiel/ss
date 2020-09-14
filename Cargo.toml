@@ -1,6 +1,6 @@
 [package]
 name = "ss"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Antoine d'Aligny <antoinedaligny@outlook.fr>"]
 edition = "2018"
 
@@ -24,3 +24,6 @@ hotwatch = "0.4.3"
 
 # Colorize console log with ANSI sequence
 colored = "2.0.0"
+
+# To format time
+chrono = "0.4.15"

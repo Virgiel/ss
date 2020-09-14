@@ -5,7 +5,7 @@
     if (prevVersion != null && prevVersion != currentVersion) {
       window.location.reload();
     } else {
-      setTimeout(() => watchForChange(currentVersion), 1000);
+      setTimeout(() => watchForChange(currentVersion), 300);
     }
   }
   watchForChange(null);
