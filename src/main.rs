@@ -1,5 +1,6 @@
 use async_std::task;
 use colored::{ColoredString, Colorize};
+use std::time;
 use std::{
     future::Future,
     path::{Path, PathBuf},
@@ -8,7 +9,6 @@ use std::{
         Arc,
     },
 };
-use std::{io::Write, time};
 use tide::{http::Mime, Body, Request, Response, StatusCode};
 
 #[derive(argh::FromArgs)]
@@ -80,7 +80,6 @@ fn format_result_code(status: StatusCode) -> ColoredString {
 
 fn serve_file(dir: &Path, req: Request<()>) -> impl Future<Output = tide::Result<Response>> {
     let start = time::Instant::now();
-    let mut res = Response::new(StatusCode::Ok);
     let arg: String = req.param("path").unwrap_or("".into());
     let path = if arg == "" { "index.html" } else { &arg };
     let end = time::Instant::now();
@@ -101,10 +100,9 @@ fn serve_file(dir: &Path, req: Request<()>) -> impl Future<Output = tide::Result
         dash,
         arg
     );
-    res.set_status(status);
+    let mut res = Response::new(status);
 
-    if let Some(content) = content {
-        let mut content = content.clone();
+    if let Some(mut content) = content {
         if path.ends_with(".html") {
             content.push_str(include_str!("./hot.html"));
         }
