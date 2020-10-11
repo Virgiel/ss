@@ -87,7 +87,7 @@ fn serve_file(dir: &Path, req: Request<()>) -> impl Future<Output = tide::Result
     let dash = "-".bright_black().bold();
     let instant = chrono::Local::now().format("%T").to_string().purple();
 
-    let (content, status) = match std::fs::read_to_string(dir.join(path)) {
+    let (content, status) = match std::fs::read(dir.join(path)) {
         Ok(content) => (Some(content), StatusCode::Ok),
         Err(_err) => (None, StatusCode::NotFound),
     };
@@ -102,11 +102,15 @@ fn serve_file(dir: &Path, req: Request<()>) -> impl Future<Output = tide::Result
     );
     let mut res = Response::new(status);
 
-    if let Some(mut content) = content {
-        if path.ends_with(".html") {
-            content.push_str(include_str!("./hot.html"));
-        }
-        let mut body = Body::from_string(content);
+    if let Some(content) = content {
+        let mut body = if let Ok(mut str) = String::from_utf8(content.clone()) {
+            if path.ends_with(".html") {
+                str.push_str(include_str!("./hot.html"));
+            }
+            Body::from_string(str)
+        } else {
+            Body::from_bytes(content)
+        };
 
         if let Some(mime) = Mime::from_extension(String::from(path).split(".").last().unwrap_or(""))
         {
