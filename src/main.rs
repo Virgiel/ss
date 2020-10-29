@@ -80,8 +80,8 @@ fn format_result_code(status: StatusCode) -> ColoredString {
 
 fn serve_file(dir: &Path, req: Request<()>) -> impl Future<Output = tide::Result<Response>> {
     let start = time::Instant::now();
-    let arg: String = req.param("path").unwrap_or("".into());
-    let path = if arg == "" { "index.html" } else { &arg };
+    let arg = req.param("path").unwrap_or("");
+    let path = if arg == "" { "index.html" } else { arg };
     let end = time::Instant::now();
     let time = end.duration_since(start).as_micros() as f64 / 1000.0;
     let dash = "-".bright_black().bold();
