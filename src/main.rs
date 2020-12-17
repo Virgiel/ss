@@ -81,15 +81,21 @@ fn format_result_code(status: StatusCode) -> ColoredString {
 fn serve_file(dir: &Path, req: Request<()>) -> impl Future<Output = tide::Result<Response>> {
     let start = time::Instant::now();
     let arg = req.param("path").unwrap_or("");
-    let path = if arg == "" { "index.html" } else { arg };
+    let mut path = PathBuf::from(arg);
     let end = time::Instant::now();
     let time = end.duration_since(start).as_micros() as f64 / 1000.0;
     let dash = "-".bright_black().bold();
     let instant = chrono::Local::now().format("%T").to_string().purple();
 
-    let (content, status) = match std::fs::read(dir.join(path)) {
+    let (content, status) = match std::fs::read(dir.join(&path)) {
         Ok(content) => (Some(content), StatusCode::Ok),
-        Err(_err) => (None, StatusCode::NotFound),
+        Err(_err) => {
+            path.push("index.html");
+            match std::fs::read(dir.join(&path)) {
+            Ok(content) => (Some(content), StatusCode::Ok),
+            Err(_err) => (None, StatusCode::NotFound),
+        }
+    },
     };
     println!(
         "[{}] {} {} {}ms {} /{}",
@@ -112,7 +118,7 @@ fn serve_file(dir: &Path, req: Request<()>) -> impl Future<Output = tide::Result
             Body::from_bytes(content)
         };
 
-        if let Some(mime) = Mime::from_extension(String::from(path).split(".").last().unwrap_or(""))
+        if let Some(mime) = Mime::from_extension(path.extension().unwrap_or_default().to_str().unwrap_or_default())
         {
             body.set_mime(mime);
         }

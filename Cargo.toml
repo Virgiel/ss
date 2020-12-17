@@ -1,6 +1,6 @@
 [package]
 name = "ss"
-version = "0.1.3"
+version = "0.1.4"
 authors = ["Antoine d'Aligny <antoinedaligny@outlook.fr>"]
 edition = "2018"
 
@@ -11,16 +11,16 @@ edition = "2018"
 argh = "0.1.4"
 
 # Dev server
-tide = "0.14.0"
+tide = "0.15.0"
 
 # Async scheduler
-async-std = { version = "1.6.5", features = ["attributes"] }
+async-std = { version = "1.8", features = ["attributes"] }
 
 # Open link in browser
 open = "1.4.0"
 
 # Listen to filesystem change
-hotwatch = "0.4.3"
+hotwatch = "0.4.5"
 
 # Colorize console log with ANSI sequence
 colored = "2.0.0"
