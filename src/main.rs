@@ -1,5 +1,6 @@
 use async_std::task;
 use colored::{ColoredString, Colorize};
+use mimalloc::MiMalloc;
 use std::time;
 use std::{
     future::Future,
@@ -11,18 +12,21 @@ use std::{
 };
 use tide::{http::Mime, Body, Request, Response, StatusCode};
 
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
+
 #[derive(argh::FromArgs)]
 /// Launch a static website server in current dir
 struct Args {
     /// serve built files
     #[argh(switch, short = 'o')]
     pub open: bool,
-    /// the path to the source directory
-    #[argh(option, short = 'd', default = "String::from(\".\")")]
-    pub dir: String,
     /// the port for the server
     #[argh(option, short = 'p', default = "8080")]
     pub port: u16,
+    /// the path to the source directory
+    #[argh(positional, default = "String::from(\".\")")]
+    pub dir: String,
 }
 
 fn main() {

@@ -1,26 +1,29 @@
 [package]
 name = "ss"
-version = "0.1.4"
+version = "0.2.0"
 authors = ["Antoine d'Aligny <antoinedaligny@outlook.fr>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+# Small and performant allocator
+mimalloc = { version="0.1", default-features=false }
+
 # CLI args parser
-argh = "0.1.4"
+argh = "0.1.6"
 
 # Dev server
-tide = "0.15.0"
+tide = "0.16.0"
 
 # Async scheduler
-async-std = { version = "1.8", features = ["attributes"] }
+async-std = { version = "1.10", features = ["attributes"] }
 
 # Open link in browser
-open = "1.4.0"
+open = "2.0.1"
 
 # Listen to filesystem change
-hotwatch = "0.4.5"
+hotwatch = "0.4.6"
 
 # Colorize console log with ANSI sequence
 colored = "2.0.0"
